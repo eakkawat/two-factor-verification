@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Notifications\TwoFactorCode;
+use App\Mail\OTPMail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -39,10 +41,21 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated(Request $request, $user){
-        $user->generateTwoFactorCode();
-        $user->notify(new TwoFactorCode());
+    protected function attemptLogin(Request $request)
+    {
 
-        return redirect()->route('verify.index');
+        $result =  $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
+
+        if($result) {
+            $otp = rand(100000, 999999);
+            Cache::put(['otp' => $otp], now()->addSeconds(20));
+            Mail::to('eak@gmail.com')->send(new OTPMail($otp));
+        }
+
+        return $result;
     }
+
+ 
 }

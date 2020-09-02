@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
@@ -16,10 +17,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'two_factor_code', 'two_factor_expires_at'
+        'name', 'email', 'password', 'is_verified'
     ];
-
-    protected $dates = ['two_factor_expires_at'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,25 +36,12 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'verified' => 'boolean'
+        'is_verified' => 'boolean'
     ];
 
-    public function verified(){
-        session()->put('verified', true);
-    }
 
-    public function generateTwoFactorCode(){
-        $this->timestamps = false;
-        $this->two_factor_code = rand(100000, 999999);
-        $this->two_factor_expires_at = now()->addMinutes(10);
-        $this->save();
-
+    public function otp(){
+        return Cache::get('otp');
     }
-
-    public function resetTwoFactorCode(){
-        $this->timestamps = false;
-        $this->two_factor_code = null;
-        $this->two_factor_expires_at = null;
-        $this->save();
-    }
+    
 }

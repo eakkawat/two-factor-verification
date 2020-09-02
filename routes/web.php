@@ -15,11 +15,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('verify/resend', 'Auth\TwoFactorController@resend')->name('verify.resend');
-Route::resource('verify', 'Auth\TwoFactorController')->only(['index', 'store']);
+Route::group(['middleware' => 'twofactor'], function(){
+    Route::get('/home', 'HomeController@index')->name('home');
+});
+
+Route::post('verifyOTP', 'verifyOTPController@verify')->name('otp.verify');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
 
 
