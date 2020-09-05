@@ -17,7 +17,7 @@ class loginTest extends TestCase
         
         $this->actingAs($user);
 
-        $this->get('/home')->assertRedirect('/');
+        $this->get('/home')->assertRedirect('/verifyOTP');
         
     }
 

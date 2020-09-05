@@ -2,24 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\OTPRequest;
 
 class verifyOTPController extends Controller
 {
-    public function verify(Request $request){
-        $validated = $request->validate([
-            'otp' => 'required'
-        ]);
 
-        if(Cache::get('otp') === $validated['otp']) {
-            auth()->user()->is_verified = true;
-            auth()->user()->save();
+    public function show(){
+        return view('otp.show');
+    }
+
+
+    public function verify(OTPRequest $request){
+
+        if(strval($request->otp) === strval(auth()->user()->otp())) {
+
+            auth()->user()->update(['is_verified'=>true]);
+
+            return redirect('/home');
         }
 
-        return response()->json([
-            'message' => 'verified'
-        ], 201);
+        return redirect()->back()->withErrors(['otp'=>'OTP does not match or expired.']);
         
+    }
+
+    public function resend(){
+        if(auth()->check()){
+            auth()->user()->resendOTP();
+            return redirect('/verifyOTP');
+        }
+
+        return redirect()->back();
     }
 }

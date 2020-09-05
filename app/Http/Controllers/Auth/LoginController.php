@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\OTPMail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -49,12 +46,20 @@ class LoginController extends Controller
         );
 
         if($result) {
-            $otp = rand(100000, 999999);
-            Cache::put(['otp' => $otp], now()->addSeconds(20));
-            Mail::to('eak@gmail.com')->send(new OTPMail($otp));
+            auth()->user()->sendOTP();
         }
 
         return $result;
+    }
+
+    public function logout(Request $request){
+        auth()->user()->update(['is_verified' => false]);
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
     }
 
  
