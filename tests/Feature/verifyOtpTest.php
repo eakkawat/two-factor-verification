@@ -36,20 +36,6 @@ class verifyOtpTest extends TestCase
 
     }
 
-    /** @test */
-    public function a_user_can_resend_otp(){
-
-        $user = $this->logInUser();
-
-        $this->post('/verifyOTP', ['otp'=>'000000'])->assertStatus(302);
-
-        $this->get('/resendOTP')
-            ->assertRedirect('/verifyOTP');
-
-        $this->post('/verifyOTP', ['otp'=>$user->otp()])->assertStatus(302);
-
-
-    }
 
     /** @test */
     public function invalid_otp_return_errors_message(){

@@ -12,6 +12,11 @@
                         </div>
                     @endforeach
                 @endif
+                @if (Session::has('message'))
+                    <div class="alert alert-info">
+                        {{ Session::get('message') }}
+                    </div>
+                @endif
                 <div class="card-header">
                     <h3>Enter OTP</h3>
                 </div>

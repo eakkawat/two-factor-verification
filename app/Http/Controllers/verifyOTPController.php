@@ -13,7 +13,7 @@ class verifyOTPController extends Controller
 
 
     public function verify(OTPRequest $request){
-
+     
         if(strval($request->otp) === strval(auth()->user()->otp())) {
 
             auth()->user()->update(['is_verified'=>true]);
@@ -21,14 +21,14 @@ class verifyOTPController extends Controller
             return redirect('/home');
         }
 
-        return redirect()->back()->withErrors(['otp'=>'OTP does not match or expired.']);
+        return redirect()->back()->withErrors(['otp'=>'OTP is invalid or expired.']);
         
     }
 
     public function resend(){
         if(auth()->check()){
-            auth()->user()->resendOTP();
-            return redirect('/verifyOTP');
+            auth()->user()->sendOTP();
+            return redirect('/verifyOTP')->with(['message' => 'Your new OTP is sent. Please check.']);
         }
 
         return redirect()->back();

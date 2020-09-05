@@ -10,7 +10,6 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
@@ -50,6 +49,25 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- <div class="form-group row">
+                            <div class="col-md-6 offset-md-4 d-flex">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="otp_via" id="sms" value="sms" checked>
+
+                                    <label class="form-check-label" for="sms_otp">
+                                        {{ __('OTP via sms') }}
+                                    </label>
+                                </div>
+                                <div class="form-check ml-3">
+                                    <input class="form-check-input" type="radio" name="otp_via" id="email" value="email">
+
+                                    <label class="form-check-label" for="email_otp">
+                                        {{ __('OTP via email') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div> --}}
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
